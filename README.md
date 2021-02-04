@@ -12,6 +12,9 @@
 - Developed in dart with [flutter](https://flutter.dev)
 - Just a fun project
 ---
+### ☑️ To Do
+- Display the characters that you type incorrectly the most
+---
 ### ❕ Please Note
 - This has only been tested in Google Chrome, so it may not work in other browsers.
 - This is the first release, so there may be bugs and issues (please open an issue [here](https://github.com/JakesMD/TypeTypeGo/issues) if you find a bug or something's not working for you)
