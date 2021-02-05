@@ -7,13 +7,11 @@
     - **WPM (words per minute):** (charactersTyped / 5) / minutesElapsed
     - **Accuracy:** (correctlyTypedCharacters / charactersTyped)*100
     - **Score:** WPM * Accuracy
+- It shows you common mistakes you make
 ---
 ### ℹ️ About
 - Developed in dart with [flutter](https://flutter.dev)
 - Just a fun project
----
-### ☑️ To Do
-- Display the characters that you type incorrectly the most
 ---
 ### ❕ Please Note
 - This has only been tested in Google Chrome, so it may not work in other browsers.
