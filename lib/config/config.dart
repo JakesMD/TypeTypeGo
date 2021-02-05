@@ -2,7 +2,7 @@ import 'package:typetypego/config/consts.dart';
 
 class Config {
   static const String repositoryUrl = "github.com/JakesMD/TypeTypeGo";
-  static const String appVersion = "1.0.0"; // TODO: update app version
+  static const String appVersion = "1.0.1"; // TODO: update app version
   static const List<String> ignoredKeys = [
     "Shift",
     "Alt",
@@ -16,6 +16,7 @@ class Config {
     ',',
     Consts.returnSymbol
   ];
+  static const int minTextLength = 5;
   static const int wpmTarget = 150;
   static const int scoreTarget = 15000;
   static const double typeTestBoxCharacterWidth = 22;

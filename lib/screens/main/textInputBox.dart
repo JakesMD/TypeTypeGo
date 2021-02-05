@@ -90,13 +90,15 @@ class TextInputBoxTextField extends StatelessWidget {
           controller: controller,
           focusNode: focusNode,
           validator: (value) {
-            // If the text field is empty.
-            if (value.trim().isEmpty)
+            final String trimmedValue = value.trim();
+            // True if the text field is empty.
+            if (trimmedValue.isEmpty)
               return 'Paste some text in here and then click "GO!" to start';
-
-            // If there is a word that is longer than maxWordLength.
-            else if (value
-                    .trim()
+            // True if the value is less than 5.
+            else if (trimmedValue.length < Config.minTextLength)
+              return "There's not enough text to test yourself on (min 5 characters)";
+            // True if there is a word that is longer than maxWordLength.
+            else if (trimmedValue
                     .split(' ')
                     .reduce((value, element) =>
                         value.length > element.length ? value : element)
