@@ -7,7 +7,7 @@
     - **WPM (words per minute):** (charactersTyped / 5) / minutesElapsed
     - **Accuracy:** (correctlyTypedCharacters / charactersTyped)*100
     - **Score:** WPM * Accuracy
-- It shows you common mistakes you make
+- It shows common mistakes you make
 ---
 ### ℹ️ About
 - Developed in dart with [flutter](https://flutter.dev)
