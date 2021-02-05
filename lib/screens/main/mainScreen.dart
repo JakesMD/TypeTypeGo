@@ -23,6 +23,7 @@ class _MainScreenState extends State<MainScreen> {
   ResultsSideBar _resultsSideBar;
   String _typeTestText = '';
   List<List> _charactersData = [];
+  Map<String, int> _mistakes = {};
   int _cursorIndex = 0;
   int _accuracy = 0;
   DateTime _startTime;
@@ -30,12 +31,24 @@ class _MainScreenState extends State<MainScreen> {
 
   //String _debugText = '';
 
-  /// Calculates the WPM and accuracy and updates the [_resultsSideBar].
+  /// Gets the 5 most frequent mistakes from [_mistakes].
+  List<String> _getCommonMistakes() {
+    List _sortedMistakes = _mistakes.keys.toList(growable: false)
+      ..sort((k1, k2) => _mistakes[k2].compareTo(_mistakes[k1]));
+    return _sortedMistakes.sublist(
+        0, _sortedMistakes.length < 5 ? _sortedMistakes.length : 5);
+  }
+
+  /// Calculates the WPM, accuracy and common mistakes and updates the [_resultsSideBar].
   void _updateResultsSideBar() {
     final double wpm = (_cursorIndex / 5) /
         (DateTime.now().difference(_startTime).inMilliseconds / 60000);
     final double accuracy = _accuracy / _cursorIndex;
-    _resultsSideBar.update(wpm: wpm, accuracy: accuracy);
+    _resultsSideBar.update(
+      wpm: wpm,
+      accuracy: accuracy,
+      commonMistakes: _getCommonMistakes(),
+    );
   }
 
   /// Clears old test data, creates new data from [newText] and updates the other widgets accordingly.
@@ -57,7 +70,8 @@ class _MainScreenState extends State<MainScreen> {
         );
 
     // Resets the ResultsSideBar.
-    _resultsSideBar.update(wpm: 0, accuracy: 0);
+    _resultsSideBar.update(
+        wpm: 0, accuracy: 0, commonMistakes: _getCommonMistakes());
 
     // Rebuilds the TypeTestBoxCharacters in the TypeTestBox.
     _typeTestBox.generateCharacters(_charactersData);
@@ -125,8 +139,14 @@ class _MainScreenState extends State<MainScreen> {
         _accuracy++;
       }
       // True if the input is wrong.
-      else
+      else {
         _charactersData[_cursorIndex][1] = Consts.incorrectState;
+        // Increases the number of incorrect types for the current character in _mistakes.
+        if (_mistakes.containsKey(_charactersData[_cursorIndex][0]))
+          _mistakes[_charactersData[_cursorIndex][0]]++;
+        else
+          _mistakes[_charactersData[_cursorIndex][0]] = 1;
+      }
 
       // Update the corresponding TypeTestBoxCharacters.
       _typeTestBox.updateCharacter(
@@ -148,7 +168,7 @@ class _MainScreenState extends State<MainScreen> {
         FocusScope.of(context).requestFocus(FocusNode());
       }
       // Updates the ResultSideBar with the new results.
-      if (_cursorIndex > 4) _updateResultsSideBar();
+      if (_cursorIndex >= Config.minTextLength) _updateResultsSideBar();
     }
   }
 

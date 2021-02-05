@@ -15,9 +15,13 @@ class ResultsSideBar extends StatefulWidget {
   @override
   _ResultsSideBarState createState() => _resultsSideBarState;
 
-  /// Updates the circular percent indicators with the new wpm and accuracy results.
-  void update({@required double wpm, @required double accuracy}) =>
-      _resultsSideBarState.update(wpm: wpm, accuracy: accuracy);
+  /// Updates the circular percent indicators with the new wpm, accuracy and common mistakes results.
+  void update(
+          {@required double wpm,
+          @required double accuracy,
+          @required List<String> commonMistakes}) =>
+      _resultsSideBarState.update(
+          wpm: wpm, accuracy: accuracy, commonMistakes: commonMistakes);
 }
 
 class _ResultsSideBarState extends State<ResultsSideBar> {
@@ -26,18 +30,23 @@ class _ResultsSideBarState extends State<ResultsSideBar> {
   double _accuracy = 0;
   double _score = 0;
   double _scorePercent = 0;
+  List<String> _commonMistakes = [];
 
-  /// Updates the circular percent indicators with the new wpm and accuracy results.
+  /// Updates the circular percent indicators with the new wpm, accuracy and common mistakes results.
   ///
   /// Rebuilding like this instead of calling [setState()] on the [MainScreen] prevents everything from being rebuilt
   /// everytime a key is pressed.
-  void update({@required double wpm, @required double accuracy}) {
+  void update(
+      {@required double wpm,
+      @required double accuracy,
+      @required List<String> commonMistakes}) {
     setState(() {
       _wpm = wpm;
       _wpmPercent = _wpm / Config.wpmTarget;
       _accuracy = accuracy;
       _score = _wpm * (accuracy * 100);
       _scorePercent = _score / Config.scoreTarget;
+      _commonMistakes = commonMistakes;
     });
   }
 
@@ -48,9 +57,9 @@ class _ResultsSideBarState extends State<ResultsSideBar> {
       child: Container(
         padding: EdgeInsets.all(20),
         width: 250,
-        height: MediaQuery.of(context).size.height > 800
+        height: MediaQuery.of(context).size.height > 850
             ? MediaQuery.of(context).size.height
-            : 800,
+            : 850,
         color: Palette.blue,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -74,6 +83,33 @@ class _ResultsSideBarState extends State<ResultsSideBar> {
               percent: _scorePercent < 1 ? _scorePercent : 1,
               valueText: '${_score.toInt()}',
               title: 'Score',
+            ),
+
+            // The most incorrect characters.
+            SizedBox(
+              height: 80,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        _commonMistakes.length,
+                        (index) => ResultsMistakeCharacter(
+                            character: _commonMistakes[index]),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'Common Mistakes',
+                    style: TextStyle(
+                      color: Palette.blueGrey,
+                      fontSize: 24,
+                      height: 1,
+                    ),
+                  ),
+                ],
+              ),
             ),
 
             // The restart button.
@@ -134,6 +170,36 @@ class ResultsCircularPercentIndicator extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Represents a character that is frequently typed incorrectly on the [ResultsSideBar].
+class ResultsMistakeCharacter extends StatelessWidget {
+  final String character;
+
+  ResultsMistakeCharacter({@required this.character});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(1, 0, 1, 15),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(3),
+        child: Container(
+          height: 38,
+          width: Config.typeTestBoxCharacterWidth - 2,
+          decoration: BoxDecoration(color: Palette.white),
+          child: Text(
+            character,
+            style: TextStyle(
+                fontSize: 24,
+                color: Palette.blueGrey,
+                fontFamily: 'SourceCodePro'),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );

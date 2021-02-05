@@ -22,5 +22,5 @@ class Config {
   static const double typeTestBoxCharacterWidth = 22;
   static const double typeTestBoxPadding = 59;
   static const String initialTypeTestText = '''Welcome to TypeTypeGo!
-Simply enter some text into the text field below, click "GO!" and start typing! On the right you can see your WPM (words per minute), accuracy and total score. Click the "refresh" icon to restart the test.''';
+Simply enter some text into the text field below, click "GO!" and start typing! On the right you can see your WPM (words per minute), accuracy, total score and common mistakes. Click the "refresh" icon to restart the test.''';
 }
