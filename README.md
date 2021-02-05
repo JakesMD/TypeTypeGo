@@ -15,7 +15,8 @@
 ---
 ### ❕ Please Note
 - This has only been tested in Google Chrome, so it may not work in other browsers.
-- This is the first release, so there may be bugs and issues (please open an issue [here](https://github.com/JakesMD/TypeTypeGo/issues) if you find a bug or something's not working for you)
+- Please open an issue [here](https://github.com/JakesMD/TypeTypeGo/issues) if you find a bug or something's not working for you.
+- Feel free to contribute or request cool new features.
 
 ### ⚠️ Known Issues
 - Doesn't respond to key presses, because key press runtimeType is different
