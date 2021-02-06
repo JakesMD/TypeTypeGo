@@ -40,6 +40,9 @@ lib/generated_plugin_registrant.dart
 # iOS related
 /ios/
 
+# Windows related
+/windows/
+
 # Symbolication related
 app.*.symbols
 
