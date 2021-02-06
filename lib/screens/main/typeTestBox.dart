@@ -24,6 +24,7 @@ class TypeTestBox extends StatefulWidget {
 }
 
 class _TypeTestBoxState extends State<TypeTestBox> {
+  final ScrollController _controller = ScrollController();
   List<List> _words = [];
   List<TypeTestBoxCharacter> _characters = [];
 
@@ -121,6 +122,7 @@ class _TypeTestBoxState extends State<TypeTestBox> {
             Config.typeTestBoxPadding, 0, Config.typeTestBoxPadding, 0),
         child: LayoutBuilder(
           builder: (context, constraints) => ListView(
+            controller: _controller,
             padding: EdgeInsets.fromLTRB(
                 0, Config.typeTestBoxPadding, 0, Config.typeTestBoxPadding),
             children: _generateCharacterText(constraints),
