@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:typetypego/config/config.dart';
 import 'package:typetypego/config/consts.dart';
@@ -90,8 +91,7 @@ class _MainScreenState extends State<MainScreen> {
   void _onKey(RawKeyEvent event) {
     //setState(() => _debugText = event.runtimeType.toString());
     // True if the key is being pressed.
-    if (event.runtimeType.toString() == "RawKeyDownEvent" ||
-        event.runtimeType.toString().contains("minified:m")) {
+    if (event.runtimeType == RawKeyDownEvent) {
       // True if and the key doesn't need to be ignored.
       if (!Config.ignoredKeys.contains(event.character) && !_isRestarting) {
         // Starts the test when the first key is pressed.
