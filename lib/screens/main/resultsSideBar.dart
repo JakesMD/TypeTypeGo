@@ -25,6 +25,7 @@ class ResultsSideBar extends StatefulWidget {
 }
 
 class _ResultsSideBarState extends State<ResultsSideBar> {
+  final ScrollController _controller = ScrollController();
   double _wpm = 0;
   double _wpmPercent = 0;
   double _accuracy = 0;
@@ -54,6 +55,7 @@ class _ResultsSideBarState extends State<ResultsSideBar> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       // This scroll view prevents errors from occuring when the window height is to short.
+      controller: _controller,
       child: Container(
         padding: EdgeInsets.all(20),
         width: 250,
