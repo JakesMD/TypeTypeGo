@@ -2,7 +2,7 @@ import 'package:typetypego/config/consts.dart';
 
 class Config {
   static const String repositoryUrl = "github.com/JakesMD/TypeTypeGo";
-  static const String appVersion = "1.0.1"; // TODO: update app version
+  static const String appVersion = "1.0.2"; // TODO: update app version
   static const List<String> ignoredKeys = [
     "Shift",
     "Alt",
