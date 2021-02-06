@@ -25,7 +25,7 @@ class SorryScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             Text(
-              "This is only meant for desktops.\nIf you're on a desktop, try zooming out or maximizing your window.",
+              "This is only meant for desktops and laptops.\nIf you're on a desktop, try zooming out or maximizing your window.",
               style: TextStyle(
                 color: Palette.blueGrey,
                 fontSize: 18,
