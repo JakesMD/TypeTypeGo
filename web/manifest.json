@@ -1,11 +1,11 @@
 {
-    "name": "typetypego",
-    "short_name": "typetypego",
+    "name": "TypeTypeGo!",
+    "short_name": "TypeTypeGo!",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A web app that tests your typing skills with your own text.",
+    "description": "Want to improve your typing skills? TypeTypeGo! lets you test yourself using your own custom text!",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
