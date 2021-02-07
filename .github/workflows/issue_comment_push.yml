@@ -1,0 +1,16 @@
+
+name: Push on issue comment event
+
+on: issues
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Send Push Notification
+      uses: techulus/push-github-action@1.0.0
+      env:
+        API_KEY: ${{ secrets.PUSH_API_KEY }}
+        MESSAGE: "A new issue comment event was triggered on TypeTypeGo!"
