@@ -16,4 +16,4 @@
 ### ❕ Please Note
 - This has only been tested in Google Chrome, so it may not work in other browsers.
 - Please open an issue [here](https://github.com/JakesMD/TypeTypeGo/issues) if you find a bug or something's not working for you.
-- Feel free to contribute or request cool new features.
+- Feel free to contribute or [request cool new features](https://github.com/JakesMD/TypeTypeGo/discussions/6).
