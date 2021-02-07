@@ -192,12 +192,12 @@ class _TypeTestBoxCharacterState extends State<TypeTestBoxCharacter> {
           decoration: BoxDecoration(
             // The color is different depending on the state.
             color: _state == Consts.neutralState
-                ? Palette.blue.withAlpha(50)
+                ? Palette.blue.withAlpha(40)
                 : _state == Consts.correctState
-                    ? Palette.green.withAlpha(50)
+                    ? Palette.blue.withAlpha(100)
                     : _state == Consts.halfCorrectState
-                        ? Palette.orange.withAlpha(50)
-                        : Palette.red.withAlpha(50),
+                        ? Palette.orange.withAlpha(100)
+                        : Palette.red.withAlpha(100),
             border: Border(
               bottom: BorderSide(
                 // Shows a white border if the cursor is at this character.
