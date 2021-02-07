@@ -85,7 +85,7 @@ class TextInputBoxTextField extends StatelessWidget {
     return Form(
       key: formKey,
       child: SizedBox(
-        height: 250,
+        height: 200,
         child: TextFormField(
           controller: controller,
           focusNode: focusNode,
