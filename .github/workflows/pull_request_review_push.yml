@@ -1,0 +1,15 @@
+name: Push on pull request review event
+
+on: [pull_request_review]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Send Push Notification
+      uses: techulus/push-github-action@1.0.0
+      env:
+        API_KEY: ${{ secrets.PUSH_API_KEY }}
+        MESSAGE: "A new pull request review event was triggered on TypeTypeGo!"
