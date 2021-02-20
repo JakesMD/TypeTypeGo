@@ -1,6 +1,6 @@
 # ![TypeTypeGo](/web/favicon.png) TypeTypeGo! - [typetypego.jakesmd.com](https://typetypego.jakesmd.com)
 
-![TypeTypeGo Screenshot](screenshot.png)
+![TypeTypeGo Screenshot](TypeTypeGo.gif)
 ### 📄 Discription
 - A web app that tests your typing skills with your own text.
 - It calcuates your WPM, accuracy and total score
