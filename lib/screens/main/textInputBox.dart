@@ -38,7 +38,8 @@ class TextInputBox extends StatelessWidget {
       // We need the constraints so we can give the text field a maxWordLength.
       builder: (context, constraints) => Container(
         color: Palette.white,
-        padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+        padding: EdgeInsets.fromLTRB(
+            Config.margin, Config.margin, Config.margin, 10),
         child: Column(
           children: [
             // The text field.
@@ -56,7 +57,7 @@ class TextInputBox extends StatelessWidget {
 
             // The start button.
             TextInputBoxStartButton(onPressed: _validate),
-            SizedBox(height: 20),
+            SizedBox(height: Config.margin),
 
             // The info text.
             TextInputBoxInfoText(),
@@ -122,13 +123,14 @@ class TextInputBoxTextField extends StatelessWidget {
                 color: Palette.blueGrey.withOpacity(0.5), fontSize: 16),
             errorStyle: TextStyle(color: Palette.red, fontSize: 16),
             counterStyle: TextStyle(color: Palette.blueGrey, fontSize: 16),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Config.borderRadius)),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(Config.borderRadius),
               borderSide: BorderSide(color: Palette.red),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(Config.borderRadius),
               borderSide: BorderSide(color: Palette.red, width: 2),
             ),
           ),
@@ -149,8 +151,14 @@ class TextInputBoxStartButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 40,
-      child: RaisedButton(
-        elevation: 10,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          elevation: 10,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(200),
+          ),
+          primary: Palette.blue,
+        ),
         child: Text(
           'GO!',
           style: TextStyle(
@@ -159,10 +167,6 @@ class TextInputBoxStartButton extends StatelessWidget {
             fontSize: 24,
           ),
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(200),
-        ),
-        color: Palette.blue,
         onPressed: onPressed,
       ),
     );
