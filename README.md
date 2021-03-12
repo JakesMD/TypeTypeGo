@@ -17,3 +17,8 @@
 - This has only been tested in Google Chrome, so it may not work in other browsers.
 - Please [open an issue](https://github.com/JakesMD/TypeTypeGo/issues) if you find a bug or something's not working for you.
 - Feel free to contribute or [request cool new features](https://github.com/JakesMD/TypeTypeGo/discussions/6).
+---
+### ✔️ To Do
+- Add scrollbar on ResultsSideBar
+- Add stopwatch
+- Add difficulty recognizer
