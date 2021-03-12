@@ -10,15 +10,15 @@ class TextInputBox extends StatelessWidget {
   final FocusNode focusNode;
 
   /// The controller for the text field.
-  final TextEditingController controller;
+  final TextEditingController? controller;
 
   /// Called when the start button is pressed.
   ///
   /// * [String] = the validated text from the text field.
-  final Function(String) onStart;
+  final Function(String)? onStart;
 
   TextInputBox(
-      {@required this.focusNode, @required this.controller, this.onStart});
+      {required this.focusNode, required this.controller, this.onStart});
 
   // The form key for the text field.
   final _formKey = GlobalKey<FormState>();
@@ -26,9 +26,9 @@ class TextInputBox extends StatelessWidget {
   /// Validates the text from the [TextInputBoxTextField],
   /// unfocuses the [focusNode] and calls [onStart()].
   void _validate() {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       focusNode.unfocus();
-      onStart(controller.text.trim());
+      onStart!(controller!.text.trim());
     }
   }
 
@@ -70,16 +70,16 @@ class TextInputBox extends StatelessWidget {
 
 /// The text field displayed in the [TextInputBox].
 class TextInputBoxTextField extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final FocusNode focusNode;
   final GlobalKey formKey;
   final int maxWordLength;
 
   TextInputBoxTextField(
-      {@required this.controller,
-      @required this.focusNode,
-      @required this.formKey,
-      @required this.maxWordLength});
+      {required this.controller,
+      required this.focusNode,
+      required this.formKey,
+      required this.maxWordLength});
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +91,7 @@ class TextInputBoxTextField extends StatelessWidget {
           controller: controller,
           focusNode: focusNode,
           validator: (value) {
-            final String trimmedValue = value.trim();
+            final String trimmedValue = value!.trim();
             // True if the text field is empty.
             if (trimmedValue.isEmpty)
               return 'Paste some text in here and then click "GO!" to start';
@@ -143,7 +143,7 @@ class TextInputBoxTextField extends StatelessWidget {
 /// The button thats starts the test in the [TextInputBox].
 class TextInputBoxStartButton extends StatelessWidget {
   /// Called when this button is pressed.
-  final Function onPressed;
+  final Function? onPressed;
 
   TextInputBoxStartButton({this.onPressed});
 
@@ -158,6 +158,7 @@ class TextInputBoxStartButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(200),
           ),
           primary: Palette.blue,
+          padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
         ),
         child: Text(
           'GO!',
@@ -167,7 +168,7 @@ class TextInputBoxStartButton extends StatelessWidget {
             fontSize: 24,
           ),
         ),
-        onPressed: onPressed,
+        onPressed: onPressed as void Function()?,
       ),
     );
   }

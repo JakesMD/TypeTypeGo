@@ -6,7 +6,7 @@ import 'package:typetypego/config/palette.dart';
 /// The blue container with 3 circular percent indicators that displays the results of the typing test.
 class ResultsSideBar extends StatefulWidget {
   /// Called when the restart button is pressed.
-  final Function onRestart;
+  final Function? onRestart;
 
   ResultsSideBar({this.onRestart});
 
@@ -17,9 +17,9 @@ class ResultsSideBar extends StatefulWidget {
 
   /// Updates the circular percent indicators with the new wpm, accuracy and common mistakes results.
   void update(
-          {@required double wpm,
-          @required double accuracy,
-          @required List<String> commonMistakes}) =>
+          {required double wpm,
+          required double accuracy,
+          required List<String> commonMistakes}) =>
       _resultsSideBarState.update(
           wpm: wpm, accuracy: accuracy, commonMistakes: commonMistakes);
 }
@@ -38,9 +38,9 @@ class _ResultsSideBarState extends State<ResultsSideBar> {
   /// Rebuilding like this instead of calling [setState()] on the [MainScreen] prevents everything from being rebuilt
   /// everytime a key is pressed.
   void update(
-      {@required double wpm,
-      @required double accuracy,
-      @required List<String> commonMistakes}) {
+      {required double wpm,
+      required double accuracy,
+      required List<String> commonMistakes}) {
     setState(() {
       _wpm = wpm;
       _wpmPercent = _wpm / Config.wpmTarget;
@@ -121,7 +121,7 @@ class _ResultsSideBarState extends State<ResultsSideBar> {
                 icon: Icon(Icons.refresh_rounded),
                 iconSize: 75,
                 color: Palette.white,
-                onPressed: widget.onRestart,
+                onPressed: widget.onRestart as void Function()?,
               ),
             ],
           ),
@@ -138,7 +138,7 @@ class ResultsCircularPercentIndicator extends StatelessWidget {
   final String title;
 
   ResultsCircularPercentIndicator(
-      {@required this.percent, @required this.valueText, @required this.title});
+      {required this.percent, required this.valueText, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +185,7 @@ class ResultsCircularPercentIndicator extends StatelessWidget {
 class ResultsMistakeCharacter extends StatelessWidget {
   final String character;
 
-  ResultsMistakeCharacter({@required this.character});
+  ResultsMistakeCharacter({required this.character});
 
   @override
   Widget build(BuildContext context) {

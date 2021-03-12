@@ -16,9 +16,9 @@ class TypeTestBox extends StatefulWidget {
 
   /// Rebuilds the [TypeTestBoxCharacter] at [index] with the new [state] and [isAtCursor].
   void updateCharacter(
-          {@required int index,
-          @required int state,
-          @required bool isAtCursor}) =>
+          {required int index,
+          required String state,
+          required bool isAtCursor}) =>
       _typeTestBoxState.updateCharacter(
           index: index, state: state, isAtCursor: isAtCursor);
 }
@@ -107,9 +107,9 @@ class _TypeTestBoxState extends State<TypeTestBox> {
   ///
   /// Rebuilding like this instead of calling [setState()] prevents all the other [TypeTestBoxCharacter]s from being rebuilt.
   void updateCharacter(
-          {@required int index,
-          @required int state,
-          @required bool isAtCursor}) =>
+          {required int index,
+          required String state,
+          required bool isAtCursor}) =>
       _characters[index].update(state, isAtCursor);
 
   @override
@@ -139,15 +139,15 @@ class _TypeTestBoxState extends State<TypeTestBox> {
 
 /// Represents a character of the type test text displayed in the [TypeTestBox].
 class TypeTestBoxCharacter extends StatefulWidget {
-  final String character;
+  final String? character;
   final bool initialIsAtCursor;
 
   /// This is needed to make sure it's visible.
   final GlobalKey key;
 
   TypeTestBoxCharacter(
-      {@required this.key,
-      @required this.character,
+      {required this.key,
+      required this.character,
       this.initialIsAtCursor = false})
       : super(key: key);
 
@@ -158,23 +158,23 @@ class TypeTestBoxCharacter extends StatefulWidget {
   _TypeTestBoxCharacterState createState() => _typeTestBoxCharacterState;
 
   /// Rebuilds this with the new [state] and [isAtCursor].
-  void update(int state, bool isAtCursor) =>
+  void update(String state, bool isAtCursor) =>
       _typeTestBoxCharacterState.update(state, isAtCursor);
 }
 
 class _TypeTestBoxCharacterState extends State<TypeTestBoxCharacter> {
-  int _state = 0;
+  String _state = Consts.neutralState;
   bool _isAtCursor = false;
 
   /// Rebuilds this with the new [state] and [isAtCursor].
-  void update(int state, bool isAtCursor) {
+  void update(String state, bool isAtCursor) {
     setState(() {
       _state = state;
       _isAtCursor = isAtCursor;
 
       if (isAtCursor)
         // Scroll down to it's position in the ListView if it's not visible
-        Scrollable.ensureVisible(widget.key.currentContext, alignment: 0.25);
+        Scrollable.ensureVisible(widget.key.currentContext!, alignment: 0.25);
     });
   }
 
@@ -211,7 +211,7 @@ class _TypeTestBoxCharacterState extends State<TypeTestBoxCharacter> {
             ),
           ),
           child: Text(
-            widget.character,
+            widget.character!,
             style: TextStyle(
                 fontSize: 24,
                 color: Palette.white,
