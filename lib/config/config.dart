@@ -19,8 +19,10 @@ class Config {
   static const int minTextLength = 5;
   static const int wpmTarget = 150;
   static const int scoreTarget = 15000;
+  static const double margin = 20;
+  static const double borderRadius = 20;
   static const double typeTestBoxCharacterWidth = 22;
-  static const double typeTestBoxPadding = 59;
+  static const double typeTestBoxPadding = 39;
   static const String initialTypeTestText = '''Welcome to TypeTypeGo!
 Simply enter some text into the text field below, click "GO!" and start typing! On the right you can see your WPM (words per minute), accuracy, total score and common mistakes. Click the "refresh" icon to restart the test.''';
 }
