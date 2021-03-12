@@ -39,7 +39,7 @@ class TextInputBox extends StatelessWidget {
       builder: (context, constraints) => Container(
         color: Palette.white,
         padding: EdgeInsets.fromLTRB(
-            Config.margin, Config.margin, Config.margin, 10),
+            Config.margin, Config.margin, Config.margin, Config.margin / 2),
         child: Column(
           children: [
             // The text field.
@@ -117,7 +117,7 @@ class TextInputBoxTextField extends StatelessWidget {
           textAlignVertical: TextAlignVertical.top,
           style: TextStyle(color: Palette.blueGrey),
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.all(10),
+            contentPadding: EdgeInsets.all(Config.margin / 2),
             hintText: 'Paste your text here!',
             hintStyle: TextStyle(
                 color: Palette.blueGrey.withOpacity(0.5), fontSize: 16),
