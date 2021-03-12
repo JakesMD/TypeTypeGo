@@ -96,13 +96,7 @@ class _TextInputBoxTextFieldState extends State<TextInputBoxTextField> {
     setState(() {
       final String trimmedValue = value.trim();
       _value = trimmedValue;
-
-      // Set the difficuly text to "VERY EASY" is the textbox is empty.
-      if (trimmedValue.isEmpty)
-        _difficulty = "VERY EASY";
-
-      // True if the textbox is not empty.
-      else {
+      if (trimmedValue.isNotEmpty) {
         // Create a list of all the easy characters.
         final List<String> easyCharacters =
             "abcdefghijklmnopqrstuvwxyz".split("")..addAll([" ", "\n"]);
@@ -186,7 +180,9 @@ class _TextInputBoxTextFieldState extends State<TextInputBoxTextField> {
                 color: Palette.blueGrey.withOpacity(0.5), fontSize: 16),
             errorStyle: TextStyle(color: Palette.red, fontSize: 16),
             counterStyle: TextStyle(color: Palette.blueGrey, fontSize: 16),
-            counterText: "Difficulty: $_difficulty  -  ${_value.length}/1000",
+            counterText:
+                (_value.isNotEmpty ? "Difficulty: $_difficulty  -  " : "") +
+                    "${_value.length}/1000",
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Config.borderRadius)),
             errorBorder: OutlineInputBorder(
