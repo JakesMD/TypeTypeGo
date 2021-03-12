@@ -53,75 +53,78 @@ class _ResultsSideBarState extends State<ResultsSideBar> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      // This scroll view prevents errors from occuring when the window height is to short.
+    return Scrollbar(
       controller: _controller,
-      child: Container(
-        padding: EdgeInsets.all(20),
-        width: 250,
-        height: MediaQuery.of(context).size.height > 850
-            ? MediaQuery.of(context).size.height
-            : 850,
-        color: Palette.blue,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            // The WPM results.
-            ResultsCircularPercentIndicator(
-              percent: _wpmPercent < 1 ? _wpmPercent : 1,
-              valueText: '${_wpm.toInt()}',
-              title: 'WPM',
-            ),
+      isAlwaysShown: true,
+      child: SingleChildScrollView(
+        // This scroll view prevents errors from occuring when the window height is to short.
+        controller: _controller,
+        child: Container(
+          padding: EdgeInsets.all(Config.margin),
+          height: MediaQuery.of(context).size.height > 850
+              ? MediaQuery.of(context).size.height
+              : 850,
+          color: Palette.blue,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // The WPM results.
+              ResultsCircularPercentIndicator(
+                percent: _wpmPercent < 1 ? _wpmPercent : 1,
+                valueText: '${_wpm.toInt()}',
+                title: 'WPM',
+              ),
 
-            // The accuracy results.
-            ResultsCircularPercentIndicator(
-              percent: _accuracy,
-              valueText: '${(_accuracy * 100).toInt()}%',
-              title: 'Accuracy',
-            ),
+              // The accuracy results.
+              ResultsCircularPercentIndicator(
+                percent: _accuracy,
+                valueText: '${(_accuracy * 100).toInt()}%',
+                title: 'Accuracy',
+              ),
 
-            // The score results.
-            ResultsCircularPercentIndicator(
-              percent: _scorePercent < 1 ? _scorePercent : 1,
-              valueText: '${_score.toInt()}',
-              title: 'Score',
-            ),
+              // The score results.
+              ResultsCircularPercentIndicator(
+                percent: _scorePercent < 1 ? _scorePercent : 1,
+                valueText: '${_score.toInt()}',
+                title: 'Score',
+              ),
 
-            // The most incorrect characters.
-            SizedBox(
-              height: 80,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        _commonMistakes.length,
-                        (index) => ResultsMistakeCharacter(
-                            character: _commonMistakes[index]),
+              // The most incorrect characters.
+              SizedBox(
+                height: 80,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          _commonMistakes.length,
+                          (index) => ResultsMistakeCharacter(
+                              character: _commonMistakes[index]),
+                        ),
                       ),
                     ),
-                  ),
-                  Text(
-                    'Common Mistakes',
-                    style: TextStyle(
-                      color: Palette.blueGrey,
-                      fontSize: 24,
-                      height: 1,
+                    Text(
+                      'Common Mistakes',
+                      style: TextStyle(
+                        color: Palette.blueGrey,
+                        fontSize: 24,
+                        height: 1,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            // The restart button.
-            IconButton(
-              icon: Icon(Icons.refresh_rounded),
-              iconSize: 75,
-              color: Palette.white,
-              onPressed: widget.onRestart,
-            ),
-          ],
+              // The restart button.
+              IconButton(
+                icon: Icon(Icons.refresh_rounded),
+                iconSize: 75,
+                color: Palette.white,
+                onPressed: widget.onRestart,
+              ),
+            ],
+          ),
         ),
       ),
     );
