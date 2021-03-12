@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:typetypego/config/config.dart';
 import 'package:typetypego/config/palette.dart';
+import 'package:typetypego/services/tools.dart';
 
 /// The blue container with 3 circular percent indicators that displays the results of the typing test.
 class ResultsSideBar extends StatefulWidget {
@@ -19,9 +20,13 @@ class ResultsSideBar extends StatefulWidget {
   void update(
           {required double wpm,
           required double accuracy,
+          required int millisElapsed,
           required List<String> commonMistakes}) =>
       _resultsSideBarState.update(
-          wpm: wpm, accuracy: accuracy, commonMistakes: commonMistakes);
+          wpm: wpm,
+          accuracy: accuracy,
+          millisElapsed: millisElapsed,
+          commonMistakes: commonMistakes);
 }
 
 class _ResultsSideBarState extends State<ResultsSideBar> {
@@ -32,6 +37,7 @@ class _ResultsSideBarState extends State<ResultsSideBar> {
   double _score = 0;
   double _scorePercent = 0;
   List<String> _commonMistakes = [];
+  int _millisElapsed = 0;
 
   /// Updates the circular percent indicators with the new wpm, accuracy and common mistakes results.
   ///
@@ -40,6 +46,7 @@ class _ResultsSideBarState extends State<ResultsSideBar> {
   void update(
       {required double wpm,
       required double accuracy,
+      required int millisElapsed,
       required List<String> commonMistakes}) {
     setState(() {
       _wpm = wpm;
@@ -48,6 +55,7 @@ class _ResultsSideBarState extends State<ResultsSideBar> {
       _score = _wpm * (accuracy * 100);
       _scorePercent = _score / Config.scoreTarget;
       _commonMistakes = commonMistakes;
+      _millisElapsed = millisElapsed;
     });
   }
 
@@ -68,6 +76,16 @@ class _ResultsSideBarState extends State<ResultsSideBar> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              // The stopwatch.
+              Text(
+                Tools.formatTime(_millisElapsed),
+                style: TextStyle(
+                  color: Palette.white,
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  height: 1,
+                ),
+              ),
               // The WPM results.
               ResultsCircularPercentIndicator(
                 percent: _wpmPercent < 1 ? _wpmPercent : 1,

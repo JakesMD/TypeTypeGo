@@ -43,12 +43,14 @@ class _MainScreenState extends State<MainScreen> {
 
   /// Calculates the WPM, accuracy and common mistakes and updates the [_resultsSideBar].
   void _updateResultsSideBar() {
-    final double wpm = (_cursorIndex / 5) /
-        (DateTime.now().difference(_startTime!).inMilliseconds / 60000);
+    final Duration timeElapsed = DateTime.now().difference(_startTime!);
+    final double wpm =
+        (_cursorIndex / 5) / (timeElapsed.inMilliseconds / 60000);
     final double accuracy = _accuracy / _cursorIndex;
     _resultsSideBar!.update(
       wpm: wpm,
       accuracy: accuracy,
+      millisElapsed: timeElapsed.inMilliseconds,
       commonMistakes: _getCommonMistakes(),
     );
   }
@@ -73,8 +75,11 @@ class _MainScreenState extends State<MainScreen> {
         );
 
     // Resets the ResultsSideBar.
-    _resultsSideBar!
-        .update(wpm: 0, accuracy: 0, commonMistakes: _getCommonMistakes());
+    _resultsSideBar!.update(
+        wpm: 0,
+        accuracy: 0,
+        millisElapsed: 0,
+        commonMistakes: _getCommonMistakes());
 
     // Rebuilds the TypeTestBoxCharacters in the TypeTestBox.
     _typeTestBox.generateCharacters(_charactersData);
@@ -94,6 +99,7 @@ class _MainScreenState extends State<MainScreen> {
     //setState(() => _debugText = event.runtimeType.toString());
     // True if the key is being pressed.
     if (event.runtimeType == RawKeyDownEvent) {
+      print(event.character);
       // True if and the key doesn't need to be ignored.
       if (!Config.ignoredKeys.contains(event.character) && !_isRestarting) {
         // Starts the test when the first key is pressed.
