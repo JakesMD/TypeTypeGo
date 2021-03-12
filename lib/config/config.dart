@@ -22,6 +22,7 @@ class Config {
     "F12",
     "Function",
     "Meta",
+    "Escape",
   ];
   static const List<String> wordBreakCharacters = [
     ' ',
