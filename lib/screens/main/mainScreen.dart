@@ -20,14 +20,14 @@ class MainScreen extends StatefulHookWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final TypeTestBox _typeTestBox = TypeTestBox();
-  FocusNode _typeTestFocusNode;
-  ResultsSideBar _resultsSideBar;
+  FocusNode? _typeTestFocusNode;
+  ResultsSideBar? _resultsSideBar;
   String _typeTestText = '';
-  List<List> _charactersData = [];
+  List<List<String>> _charactersData = [];
   Map<String, int> _mistakes = {};
   int _cursorIndex = 0;
   int _accuracy = 0;
-  DateTime _startTime;
+  DateTime? _startTime;
   bool _isRestarting = false;
 
   //String _debugText = '';
@@ -35,19 +35,22 @@ class _MainScreenState extends State<MainScreen> {
   /// Gets the 5 most frequent mistakes from [_mistakes].
   List<String> _getCommonMistakes() {
     List _sortedMistakes = _mistakes.keys.toList(growable: false)
-      ..sort((k1, k2) => _mistakes[k2].compareTo(_mistakes[k1]));
+      ..sort((k1, k2) => _mistakes[k2]!.compareTo(_mistakes[k1]!));
     return _sortedMistakes.sublist(
-        0, _sortedMistakes.length < 5 ? _sortedMistakes.length : 5);
+            0, _sortedMistakes.length < 5 ? _sortedMistakes.length : 5)
+        as List<String>;
   }
 
   /// Calculates the WPM, accuracy and common mistakes and updates the [_resultsSideBar].
   void _updateResultsSideBar() {
-    final double wpm = (_cursorIndex / 5) /
-        (DateTime.now().difference(_startTime).inMilliseconds / 60000);
+    final Duration timeElapsed = DateTime.now().difference(_startTime!);
+    final double wpm =
+        (_cursorIndex / 5) / (timeElapsed.inMilliseconds / 60000);
     final double accuracy = _accuracy / _cursorIndex;
-    _resultsSideBar.update(
+    _resultsSideBar!.update(
       wpm: wpm,
       accuracy: accuracy,
+      millisElapsed: timeElapsed.inMilliseconds,
       commonMistakes: _getCommonMistakes(),
     );
   }
@@ -67,12 +70,16 @@ class _MainScreenState extends State<MainScreen> {
     // Create a new list of characters from newText.
     newText.replaceAll('\n', Consts.returnSymbol).split('').forEach(
           // first element is the actual character string, second element is the state of the character.
-          (character) => _charactersData.add([character, Consts.correctState]),
+          (String character) =>
+              _charactersData.add([character, Consts.correctState]),
         );
 
     // Resets the ResultsSideBar.
-    _resultsSideBar.update(
-        wpm: 0, accuracy: 0, commonMistakes: _getCommonMistakes());
+    _resultsSideBar!.update(
+        wpm: 0,
+        accuracy: 0,
+        millisElapsed: 0,
+        commonMistakes: _getCommonMistakes());
 
     // Rebuilds the TypeTestBoxCharacters in the TypeTestBox.
     _typeTestBox.generateCharacters(_charactersData);
@@ -82,7 +89,7 @@ class _MainScreenState extends State<MainScreen> {
     //_typeTestFocusNode.requestFocus(); // <-- this doesn't work on release app for some reason??!!
 
     // Once all the widgets are built we can allow key presses again.
-    WidgetsBinding.instance.addPostFrameCallback(
+    WidgetsBinding.instance!.addPostFrameCallback(
       (_) => _isRestarting = false,
     );
   }
@@ -92,6 +99,7 @@ class _MainScreenState extends State<MainScreen> {
     //setState(() => _debugText = event.runtimeType.toString());
     // True if the key is being pressed.
     if (event.runtimeType == RawKeyDownEvent) {
+      print(event.character);
       // True if and the key doesn't need to be ignored.
       if (!Config.ignoredKeys.contains(event.character) && !_isRestarting) {
         // Starts the test when the first key is pressed.
@@ -109,7 +117,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   /// Validates the key press and updates the test data and widgets accordingly.
-  void _validateInput(String input) {
+  void _validateInput(String? input) {
     // True if backspace is pressed and the cursor isn't at the start of the test.
     if (input == "Backspace") {
       if (_cursorIndex > 0) {
@@ -143,7 +151,9 @@ class _MainScreenState extends State<MainScreen> {
         _charactersData[_cursorIndex][1] = Consts.incorrectState;
         // Increases the number of incorrect types for the current character in _mistakes.
         if (_mistakes.containsKey(_charactersData[_cursorIndex][0]))
-          _mistakes[_charactersData[_cursorIndex][0]]++;
+          _mistakes[_charactersData[_cursorIndex][0]] =
+              _mistakes[_charactersData[_cursorIndex][0]]! +
+                  1; // <-- Any other way of doing this with null-safty??
         else
           _mistakes[_charactersData[_cursorIndex][0]] = 1;
       }
@@ -164,7 +174,7 @@ class _MainScreenState extends State<MainScreen> {
             index: _cursorIndex, state: Consts.neutralState, isAtCursor: true);
       // Prevents listening to key inputs if the cursor is at the end of the test.
       else {
-        _typeTestFocusNode.unfocus();
+        _typeTestFocusNode!.unfocus();
         FocusScope.of(context).requestFocus(FocusNode());
       }
       // Updates the ResultSideBar with the new results.
@@ -180,7 +190,7 @@ class _MainScreenState extends State<MainScreen> {
     _resultsSideBar = ResultsSideBar(onRestart: () => _restart(_typeTestText));
 
     // Starts a test with the initial type text once everything has been built.
-    WidgetsBinding.instance.addPostFrameCallback(
+    WidgetsBinding.instance!.addPostFrameCallback(
       (_) => _restart(Config.initialTypeTestText),
     );
   }
@@ -194,7 +204,7 @@ class _MainScreenState extends State<MainScreen> {
     final FocusNode textInputFocusNode = useFocusNode();
 
     // Gets the controller for the TextInputBox.
-    final TextEditingController textInputController =
+    final TextEditingController? textInputController =
         useTextEditingController();
 
     return Scaffold(
@@ -210,7 +220,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),*/
                 Expanded(
                   child: RawKeyboardListener(
-                    focusNode: _typeTestFocusNode,
+                    focusNode: _typeTestFocusNode!,
                     onKey: _onKey,
                     child: _typeTestBox,
                   ),
@@ -223,7 +233,7 @@ class _MainScreenState extends State<MainScreen> {
               ],
             ),
           ),
-          _resultsSideBar,
+          _resultsSideBar!,
         ],
       ),
     );

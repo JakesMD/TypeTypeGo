@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:typetypego/config/config.dart';
@@ -10,15 +12,15 @@ class TextInputBox extends StatelessWidget {
   final FocusNode focusNode;
 
   /// The controller for the text field.
-  final TextEditingController controller;
+  final TextEditingController? controller;
 
   /// Called when the start button is pressed.
   ///
   /// * [String] = the validated text from the text field.
-  final Function(String) onStart;
+  final Function(String)? onStart;
 
   TextInputBox(
-      {@required this.focusNode, @required this.controller, this.onStart});
+      {required this.focusNode, required this.controller, this.onStart});
 
   // The form key for the text field.
   final _formKey = GlobalKey<FormState>();
@@ -26,9 +28,9 @@ class TextInputBox extends StatelessWidget {
   /// Validates the text from the [TextInputBoxTextField],
   /// unfocuses the [focusNode] and calls [onStart()].
   void _validate() {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       focusNode.unfocus();
-      onStart(controller.text.trim());
+      onStart!(controller!.text.trim());
     }
   }
 
@@ -38,7 +40,8 @@ class TextInputBox extends StatelessWidget {
       // We need the constraints so we can give the text field a maxWordLength.
       builder: (context, constraints) => Container(
         color: Palette.white,
-        padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+        padding: EdgeInsets.fromLTRB(
+            Config.margin, Config.margin, Config.margin, Config.margin / 2),
         child: Column(
           children: [
             // The text field.
@@ -56,7 +59,7 @@ class TextInputBox extends StatelessWidget {
 
             // The start button.
             TextInputBoxStartButton(onPressed: _validate),
-            SizedBox(height: 20),
+            SizedBox(height: Config.margin),
 
             // The info text.
             TextInputBoxInfoText(),
@@ -68,29 +71,83 @@ class TextInputBox extends StatelessWidget {
 }
 
 /// The text field displayed in the [TextInputBox].
-class TextInputBoxTextField extends StatelessWidget {
-  final TextEditingController controller;
+class TextInputBoxTextField extends StatefulWidget {
+  final TextEditingController? controller;
   final FocusNode focusNode;
   final GlobalKey formKey;
   final int maxWordLength;
 
   TextInputBoxTextField(
-      {@required this.controller,
-      @required this.focusNode,
-      @required this.formKey,
-      @required this.maxWordLength});
+      {required this.controller,
+      required this.focusNode,
+      required this.formKey,
+      required this.maxWordLength});
+
+  @override
+  _TextInputBoxTextFieldState createState() => _TextInputBoxTextFieldState();
+}
+
+class _TextInputBoxTextFieldState extends State<TextInputBoxTextField> {
+  String _value = "";
+  String _difficulty = "VERY EASY";
+
+  /// Calculates the difficulty of the [value] and updates [_value] and [_difficulty] accordingly.
+  void _updateDifficulty(String value) {
+    setState(() {
+      final String trimmedValue = value.trim();
+      _value = trimmedValue;
+      if (trimmedValue.isNotEmpty) {
+        // Create a list of all the easy characters.
+        final List<String> easyCharacters =
+            "abcdefghijklmnopqrstuvwxyz".split("")..addAll([" ", "\n"]);
+
+        double difficultyPoints = 0;
+
+        // Loop through the text in the textbox.
+        trimmedValue.split("").forEach((String element) {
+          // True if the character is not easy.
+          if (!easyCharacters.contains(element)) {
+            // Add 0.25 to difficultPoints if the character is a capital letter.
+            if (easyCharacters.contains(element.toLowerCase()))
+              difficultyPoints += 0.25;
+            // Add 0.5 to difficultPoints if the character is a number.
+            else if (double.tryParse(element) != null)
+              difficultyPoints += 0.5;
+            // Add 1 to difficultPoints if the character is a anything else, e.g. !, :, #,...
+            else
+              difficultyPoints++;
+          }
+        });
+
+        // Calculate the difficulty by dividing the points by the square root of the length of text.
+        final double difficulty = difficultyPoints / sqrt(trimmedValue.length);
+
+        // Update the difficuly text according to the calculated difficulty.
+        if (difficultyPoints < 0.75)
+          _difficulty = "VERY EASY";
+        else if (difficulty < 1)
+          _difficulty = "EASY";
+        else if (difficulty < 1.25)
+          _difficulty = "MEDIUM";
+        else if (difficulty < 1.5)
+          _difficulty = "HARD";
+        else
+          _difficulty = "VERY HARD";
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
+      key: widget.formKey,
       child: SizedBox(
         height: 200,
         child: TextFormField(
-          controller: controller,
-          focusNode: focusNode,
+          controller: widget.controller,
+          focusNode: widget.focusNode,
           validator: (value) {
-            final String trimmedValue = value.trim();
+            final String trimmedValue = value!.trim();
             // True if the text field is empty.
             if (trimmedValue.isEmpty)
               return 'Paste some text in here and then click "GO!" to start';
@@ -103,11 +160,12 @@ class TextInputBoxTextField extends StatelessWidget {
                     .reduce((value, element) =>
                         value.length > element.length ? value : element)
                     .length >
-                maxWordLength) {
+                widget.maxWordLength) {
               return 'A word is too long (try making your window bigger)';
             }
             return null;
           },
+          onChanged: _updateDifficulty,
           maxLines: null,
           minLines: null,
           expands: true,
@@ -116,19 +174,23 @@ class TextInputBoxTextField extends StatelessWidget {
           textAlignVertical: TextAlignVertical.top,
           style: TextStyle(color: Palette.blueGrey),
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.all(10),
+            contentPadding: EdgeInsets.all(Config.margin / 2),
             hintText: 'Paste your text here!',
             hintStyle: TextStyle(
                 color: Palette.blueGrey.withOpacity(0.5), fontSize: 16),
             errorStyle: TextStyle(color: Palette.red, fontSize: 16),
             counterStyle: TextStyle(color: Palette.blueGrey, fontSize: 16),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+            counterText:
+                (_value.isNotEmpty ? "Difficulty: $_difficulty  -  " : "") +
+                    "${_value.length}/1000",
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Config.borderRadius)),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(Config.borderRadius),
               borderSide: BorderSide(color: Palette.red),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(Config.borderRadius),
               borderSide: BorderSide(color: Palette.red, width: 2),
             ),
           ),
@@ -141,7 +203,7 @@ class TextInputBoxTextField extends StatelessWidget {
 /// The button thats starts the test in the [TextInputBox].
 class TextInputBoxStartButton extends StatelessWidget {
   /// Called when this button is pressed.
-  final Function onPressed;
+  final Function? onPressed;
 
   TextInputBoxStartButton({this.onPressed});
 
@@ -149,8 +211,15 @@ class TextInputBoxStartButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 40,
-      child: RaisedButton(
-        elevation: 10,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          elevation: 10,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(200),
+          ),
+          primary: Palette.blue,
+          padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+        ),
         child: Text(
           'GO!',
           style: TextStyle(
@@ -159,11 +228,7 @@ class TextInputBoxStartButton extends StatelessWidget {
             fontSize: 24,
           ),
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(200),
-        ),
-        color: Palette.blue,
-        onPressed: onPressed,
+        onPressed: onPressed as void Function()?,
       ),
     );
   }

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:typetypego/config/config.dart';
 import 'package:typetypego/config/palette.dart';
+import 'package:typetypego/services/tools.dart';
 
 /// The blue container with 3 circular percent indicators that displays the results of the typing test.
 class ResultsSideBar extends StatefulWidget {
   /// Called when the restart button is pressed.
-  final Function onRestart;
+  final Function? onRestart;
 
   ResultsSideBar({this.onRestart});
 
@@ -17,11 +18,15 @@ class ResultsSideBar extends StatefulWidget {
 
   /// Updates the circular percent indicators with the new wpm, accuracy and common mistakes results.
   void update(
-          {@required double wpm,
-          @required double accuracy,
-          @required List<String> commonMistakes}) =>
+          {required double wpm,
+          required double accuracy,
+          required int millisElapsed,
+          required List<String> commonMistakes}) =>
       _resultsSideBarState.update(
-          wpm: wpm, accuracy: accuracy, commonMistakes: commonMistakes);
+          wpm: wpm,
+          accuracy: accuracy,
+          millisElapsed: millisElapsed,
+          commonMistakes: commonMistakes);
 }
 
 class _ResultsSideBarState extends State<ResultsSideBar> {
@@ -32,15 +37,17 @@ class _ResultsSideBarState extends State<ResultsSideBar> {
   double _score = 0;
   double _scorePercent = 0;
   List<String> _commonMistakes = [];
+  int _millisElapsed = 0;
 
   /// Updates the circular percent indicators with the new wpm, accuracy and common mistakes results.
   ///
   /// Rebuilding like this instead of calling [setState()] on the [MainScreen] prevents everything from being rebuilt
   /// everytime a key is pressed.
   void update(
-      {@required double wpm,
-      @required double accuracy,
-      @required List<String> commonMistakes}) {
+      {required double wpm,
+      required double accuracy,
+      required int millisElapsed,
+      required List<String> commonMistakes}) {
     setState(() {
       _wpm = wpm;
       _wpmPercent = _wpm / Config.wpmTarget;
@@ -48,80 +55,94 @@ class _ResultsSideBarState extends State<ResultsSideBar> {
       _score = _wpm * (accuracy * 100);
       _scorePercent = _score / Config.scoreTarget;
       _commonMistakes = commonMistakes;
+      _millisElapsed = millisElapsed;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      // This scroll view prevents errors from occuring when the window height is to short.
+    return Scrollbar(
       controller: _controller,
-      child: Container(
-        padding: EdgeInsets.all(20),
-        width: 250,
-        height: MediaQuery.of(context).size.height > 850
-            ? MediaQuery.of(context).size.height
-            : 850,
-        color: Palette.blue,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            // The WPM results.
-            ResultsCircularPercentIndicator(
-              percent: _wpmPercent < 1 ? _wpmPercent : 1,
-              valueText: '${_wpm.toInt()}',
-              title: 'WPM',
-            ),
+      isAlwaysShown: true,
+      child: SingleChildScrollView(
+        // This scroll view prevents errors from occuring when the window height is to short.
+        controller: _controller,
+        child: Container(
+          padding: EdgeInsets.all(Config.margin),
+          height: MediaQuery.of(context).size.height > 850
+              ? MediaQuery.of(context).size.height
+              : 850,
+          color: Palette.blue,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // The stopwatch.
+              Text(
+                Tools.formatTime(_millisElapsed),
+                style: TextStyle(
+                  color: Palette.white,
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  height: 1,
+                ),
+              ),
+              // The WPM results.
+              ResultsCircularPercentIndicator(
+                percent: _wpmPercent < 1 ? _wpmPercent : 1,
+                valueText: '${_wpm.toInt()}',
+                title: 'WPM',
+              ),
 
-            // The accuracy results.
-            ResultsCircularPercentIndicator(
-              percent: _accuracy,
-              valueText: '${(_accuracy * 100).toInt()}%',
-              title: 'Accuracy',
-            ),
+              // The accuracy results.
+              ResultsCircularPercentIndicator(
+                percent: _accuracy,
+                valueText: '${(_accuracy * 100).toInt()}%',
+                title: 'Accuracy',
+              ),
 
-            // The score results.
-            ResultsCircularPercentIndicator(
-              percent: _scorePercent < 1 ? _scorePercent : 1,
-              valueText: '${_score.toInt()}',
-              title: 'Score',
-            ),
+              // The score results.
+              ResultsCircularPercentIndicator(
+                percent: _scorePercent < 1 ? _scorePercent : 1,
+                valueText: '${_score.toInt()}',
+                title: 'Score',
+              ),
 
-            // The most incorrect characters.
-            SizedBox(
-              height: 80,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        _commonMistakes.length,
-                        (index) => ResultsMistakeCharacter(
-                            character: _commonMistakes[index]),
+              // The most incorrect characters.
+              SizedBox(
+                height: 80,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          _commonMistakes.length,
+                          (index) => ResultsMistakeCharacter(
+                              character: _commonMistakes[index]),
+                        ),
                       ),
                     ),
-                  ),
-                  Text(
-                    'Common Mistakes',
-                    style: TextStyle(
-                      color: Palette.blueGrey,
-                      fontSize: 24,
-                      height: 1,
+                    Text(
+                      'Common Mistakes',
+                      style: TextStyle(
+                        color: Palette.blueGrey,
+                        fontSize: 24,
+                        height: 1,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            // The restart button.
-            IconButton(
-              icon: Icon(Icons.refresh_rounded),
-              iconSize: 75,
-              color: Palette.white,
-              onPressed: widget.onRestart,
-            ),
-          ],
+              // The restart button.
+              IconButton(
+                icon: Icon(Icons.refresh_rounded),
+                iconSize: 75,
+                color: Palette.white,
+                onPressed: widget.onRestart as void Function()?,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -135,7 +156,7 @@ class ResultsCircularPercentIndicator extends StatelessWidget {
   final String title;
 
   ResultsCircularPercentIndicator(
-      {@required this.percent, @required this.valueText, @required this.title});
+      {required this.percent, required this.valueText, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +203,7 @@ class ResultsCircularPercentIndicator extends StatelessWidget {
 class ResultsMistakeCharacter extends StatelessWidget {
   final String character;
 
-  ResultsMistakeCharacter({@required this.character});
+  ResultsMistakeCharacter({required this.character});
 
   @override
   Widget build(BuildContext context) {
