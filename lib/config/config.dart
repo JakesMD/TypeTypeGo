@@ -2,12 +2,26 @@ import 'package:typetypego/config/consts.dart';
 
 class Config {
   static const String repositoryUrl = "github.com/JakesMD/TypeTypeGo";
-  static const String appVersion = "1.0.2"; // TODO: update app version
+  static const String appVersion = "1.1.0"; // TODO: update app version
   static const List<String> ignoredKeys = [
     "Shift",
     "Alt",
     "AltGraph",
-    "Control"
+    "Control",
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8",
+    "F9",
+    "F10",
+    "F11",
+    "F12",
+    "Function",
+    "Meta",
   ];
   static const List<String> wordBreakCharacters = [
     ' ',
