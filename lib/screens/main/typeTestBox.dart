@@ -117,15 +117,19 @@ class _TypeTestBoxState extends State<TypeTestBox> {
     return Container(
       color: Palette.blueGrey,
       alignment: Alignment.topLeft,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-            Config.typeTestBoxPadding, 0, Config.typeTestBoxPadding, 0),
-        child: LayoutBuilder(
-          builder: (context, constraints) => ListView(
-            controller: _controller,
-            padding: EdgeInsets.fromLTRB(
-                0, Config.typeTestBoxPadding, 0, Config.typeTestBoxPadding),
-            children: _generateCharacterText(constraints),
+      child: Scrollbar(
+        controller: _controller,
+        isAlwaysShown: true,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+              Config.typeTestBoxPadding, 0, Config.typeTestBoxPadding, 0),
+          child: LayoutBuilder(
+            builder: (context, constraints) => ListView(
+              controller: _controller,
+              padding: EdgeInsets.fromLTRB(
+                  0, Config.typeTestBoxPadding, 0, Config.typeTestBoxPadding),
+              children: _generateCharacterText(constraints),
+            ),
           ),
         ),
       ),
